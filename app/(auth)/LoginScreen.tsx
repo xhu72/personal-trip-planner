@@ -18,7 +18,7 @@ export default function LoginScreen() {
     }
     try {
       await signInWithEmailAndPassword(auth, email.trim(), password);
-      router.replace('/(traveler)/HomeScreen');
+      // router.replace('/(traveler)/HomeScreen');
     } catch {
       alert('Email or password is incorrect.');
     }

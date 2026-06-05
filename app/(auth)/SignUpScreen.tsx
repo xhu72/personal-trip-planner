@@ -36,7 +36,7 @@ export default function SignUpScreen() {
         language: 'en',
         createdAt: new Date(),
       });
-      router.replace('/(traveler)/HomeScreen');
+      // router.replace('/(traveler)/HomeScreen');
     } catch (error: any) {
       if (error.code === 'auth/email-already-in-use') {
         alert('That email is already registered.');
