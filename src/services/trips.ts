@@ -21,11 +21,6 @@ function docToTrip(id: string, data: Record<string, any>): Trip {
     destinations = data.destinations;
   }
 
-  let isPrivate = true;
-  if (data.isPrivate !== undefined && data.isPrivate !== null) {
-    isPrivate = data.isPrivate;
-  }
-
   return {
     id,
     userId: data.userId,
@@ -35,7 +30,6 @@ function docToTrip(id: string, data: Record<string, any>): Trip {
     endDate: data.endDate,
     numberOfDays: data.numberOfDays,
     totalBudget: data.totalBudget,
-    isPrivate,
     createdAt: new Date(data.createdAt).toISOString(),
   };
 }

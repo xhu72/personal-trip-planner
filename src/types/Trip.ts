@@ -7,7 +7,6 @@ export type Trip = {
   endDate: string;     // "YYYY-MM-DD"
   numberOfDays: number;
   totalBudget: number;
-  isPrivate: boolean;
   createdAt: string;   
 };
 
