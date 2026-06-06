@@ -98,9 +98,28 @@ export default function HomeScreen() {
     });
   }, [user]);
 
-async function handleSignOut() {
+  async function handleSignOut() {
     await signOut(auth);
   }
+
+  /* async function testRules() {
+    if (trips.length === 0) {
+      console.log('No trips loaded to test with.');
+      return;
+    }
+    const tripId = trips[0].id;
+    console.log('Testing with trip ID:', tripId);
+    try {
+      const tripDoc = await getDoc(doc(db, 'trips', tripId));
+      if (tripDoc.exists()) {
+        console.log('Read allowed:', tripDoc.data());
+      } else {
+        console.log('Read allowed but document does not exist');
+      }
+    } catch (error) {
+      console.log('Read denied:', error);
+    }
+  } */
 
   return (
     <SafeAreaView style={styles.container}>
@@ -136,6 +155,10 @@ async function handleSignOut() {
           />
         )}
       />
+
+      {/* <Pressable style={styles.testBtn} onPress={testRules}>
+        <Text style={styles.testBtnText}>Test rules</Text>
+      </Pressable> */}
 
       <Pressable
         style={styles.fab}
@@ -246,6 +269,22 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 20,
   },
+  /*
+  testBtn: {
+    position: 'absolute',
+    bottom: 84,
+    left: 24,
+    right: 24,
+    backgroundColor: '#888',
+    borderRadius: 14,
+    paddingVertical: 12,
+    alignItems: 'center',
+  },
+  testBtnText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: '600',
+  },*/
   fab: {
     position: 'absolute',
     bottom: 28,
