@@ -8,7 +8,7 @@ import { auth, db } from '../../firebaseConfig';
 import { useAuth } from '../../src/context/AuthContext';
 import { getUserTrips } from '../../src/services/trips';
 import { Trip } from '../../src/types/Trip';
-
+import { createActivity, getTripActivities } from '../../src/services/activities';
 function getTripStatus(trip: Trip) {
   const today = new Date().toISOString().slice(0, 10);
 
@@ -79,12 +79,29 @@ export default function HomeScreen() {
       try {
         const data = await getUserTrips(user.uid);
         setTrips(data);
+        /* testing activity
+        if (data.length > 0) {
+          await createActivity({
+            tripId:         data[0].id,
+            title:          'Test Activity',
+            location:       'Tokyo Station',
+            date:           '2025-10-03',
+            time:           '09:00',
+            duration:       60,
+            category:       'Attraction',
+            isBooked:       false,
+            bookingDetails: {},
+          });
+          const all = await getTripActivities(data[0].id);
+          console.log('Activities:', all.length, all[0].title);
+        }*/
       } catch (e) {
         console.error(e);
       }
     }
 
     loadTrips();
+    
   }, [user]);
 
   useEffect(() => {
