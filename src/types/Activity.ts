@@ -1,4 +1,4 @@
-type ActivityCategory = 'Food' | 'Transport' | 'Accommodation' | 'Attraction';
+export type ActivityCategory = 'Food' | 'Transport' | 'Accommodation' | 'Attraction';
 
 export type BookingDetails = {
   confirmationNo?: string;
