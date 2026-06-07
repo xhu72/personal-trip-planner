@@ -151,9 +151,21 @@ export default function ActivitiesScreen() {
     <SafeAreaView style={styles.container}>
 
       <View style={styles.header}>
-        <Pressable onPress={() => router.back()}>
-          <Text style={styles.backText}>←</Text>
-        </Pressable>
+        <View style={styles.headerLeft}>
+          <Pressable onPress={() => router.back()}>
+            <Text style={styles.backText}>←</Text>
+          </Pressable>
+          <Pressable
+            onPress={() =>
+              router.push({
+                pathname: '/(traveler)/TripMapScreen',
+                params: { tripId },
+              })
+            }
+          >
+            <Text style={styles.mapText}>🗺 Map</Text>
+          </Pressable>
+        </View>
         <View style={styles.headerCenter}>
           <Text style={styles.heading} numberOfLines={1}>
             {trip?.title ?? 'Itinerary'}
@@ -233,7 +245,16 @@ const styles = StyleSheet.create({
   backText: {
     fontSize: 20,
     color: 'black',
-    width: 48,
+  },
+  headerLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 16,
+  },
+  mapText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#185FA5',
   },
   headerCenter: {
     flex: 1,
