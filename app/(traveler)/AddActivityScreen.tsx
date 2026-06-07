@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -11,7 +11,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { createActivity } from '../../src/services/activities';
 import { getTrip } from '../../src/services/trips';
-import { ActivityCategory } from '../../src/types/Activity';
+import { searchPlaces, getPlaceCoordinates, PlaceSuggestion } from '../../src/services/places';
+import { ActivityCategory, Coordinates } from '../../src/types/Activity';
 import { CATEGORY_COLORS, formatDuration } from './ActivitiesScreen';
 
 const CATEGORIES: ActivityCategory[] = [
@@ -32,6 +33,9 @@ export default function AddActivityScreen() {
   const [time, setTime]           = useState('09:00');
   const [duration, setDuration]   = useState('60');
   const [saving, setSaving]       = useState(false);
+  const [coordinates, setCoordinates] = useState<Coordinates | null>(null);
+  const [suggestions, setSuggestions] = useState<PlaceSuggestion[]>([]);
+  const searchTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (!tripId) return;
@@ -52,6 +56,33 @@ export default function AddActivityScreen() {
     return null;
   }
 
+  function handleLocationChange(text: string) {
+    setLocation(text);
+    setCoordinates(null);
+    if (searchTimeout.current) clearTimeout(searchTimeout.current);
+    if (!text.trim()) {
+      setSuggestions([]);
+      return;
+    }
+    searchTimeout.current = setTimeout(async () => {
+      const places = await searchPlaces(text);
+      setSuggestions(places);
+    }, 350);
+  }
+
+  async function handleSelectPlace(suggestion: PlaceSuggestion) {
+    if (searchTimeout.current) clearTimeout(searchTimeout.current);
+    setLocation(suggestion.description);
+    setSuggestions([]);
+
+    try {
+      const coords = await getPlaceCoordinates(suggestion.placeId);
+      setCoordinates(coords);
+    } catch (e) {
+      console.error('Failed to get place coordinates:', e);
+    }
+  }
+
   async function handleSave() {
     const error = validate();
     if (error) { console.error(error); return; }
@@ -63,6 +94,7 @@ export default function AddActivityScreen() {
         tripId,
         title:          title.trim(),
         location:       location.trim(),
+        coordinates,
         category,
         date,
         time,
@@ -103,10 +135,30 @@ export default function AddActivityScreen() {
         <Text style={styles.label}>Location</Text>
         <TextInput
           style={styles.input}
-          placeholder="e.g. Downtown Toronto"
+          placeholder="Search for a place..."
           value={location}
-          onChangeText={setLocation}
+          onChangeText={handleLocationChange}
         />
+
+        {suggestions.length > 0 && (
+          <View style={styles.suggestionList}>
+            {suggestions.map(suggestion => (
+              <Pressable
+                key={suggestion.placeId}
+                style={styles.suggestionItem}
+                onPress={() => handleSelectPlace(suggestion)}
+              >
+                <Text style={styles.suggestionText} numberOfLines={1}>
+                  {suggestion.description}
+                </Text>
+              </Pressable>
+            ))}
+          </View>
+        )}
+
+        {coordinates && (
+          <Text style={styles.coordHint}>📍 Location pinned on map</Text>
+        )}
 
         <Text style={styles.label}>Category</Text>
         <View style={styles.categoryRow}>
@@ -230,6 +282,27 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     fontSize: 15,
     color: '#222',
+    marginBottom: 16,
+  },
+  suggestionList: {
+    borderWidth: 1,
+    borderColor: '#D8D8D8',
+    borderRadius: 10,
+    marginTop: -12,
+    marginBottom: 16,
+    overflow: 'hidden',
+  },
+  suggestionItem: {
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+  },
+  suggestionText: {
+    fontSize: 14,
+    color: '#222',
+  },
+  coordHint: {
+    fontSize: 13,
+    color: '#1E8E3E',
     marginBottom: 16,
   },
   categoryRow: {
