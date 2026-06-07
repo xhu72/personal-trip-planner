@@ -124,7 +124,15 @@ export default function TripSummaryScreen() {
           </View>
         )}
 
-        <Pressable style={styles.itineraryBtn}>
+        <Pressable
+          style={styles.itineraryBtn}
+          onPress={() =>
+            router.push({
+              pathname: '/(traveler)/ActivitiesScreen',
+              params: { tripId },
+            })
+          }
+        >
           <Text style={styles.itineraryBtnText}>View itinerary</Text>
         </Pressable>
 
