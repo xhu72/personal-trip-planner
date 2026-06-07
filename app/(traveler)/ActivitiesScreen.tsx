@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -8,7 +8,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter, useLocalSearchParams } from 'expo-router';
+import { useRouter, useLocalSearchParams, useFocusEffect } from 'expo-router';
 import { getTripActivities, groupByDate } from '../../src/services/activities';
 import { getTrip } from '../../src/services/trips';
 import { Activity, ActivityCategory } from '../../src/types/Activity';
@@ -37,7 +37,7 @@ export const CATEGORY_COLORS = {
   },
 } as const;
 
-function formatDuration(minutes: number): string {
+export function formatDuration(minutes: number): string {
   const h = Math.floor(minutes / 60);
   const m = minutes % 60;
   if (h === 0) return `${m} min`;
@@ -103,25 +103,25 @@ export default function ActivitiesScreen() {
   const [activities, setActivities]   = useState<Activity[]>([]);
   const [loading, setLoading]         = useState(true);
 
-  useEffect(() => {
-    async function load() {
-      if (!tripId) return;
-      try {
-        setLoading(true);
-
-        const tripData = await getTrip(tripId);
-        const actData = await getTripActivities(tripId);
-
-        setTrip(tripData);
-        setActivities(actData);
-      } catch (e) {
-        console.error('Failed to load activities:', e);
-      } finally {
-        setLoading(false);
+  useFocusEffect(
+    useCallback(() => {
+      async function load() {
+        if (!tripId) return;
+        try {
+          setLoading(true);
+          const tripData = await getTrip(tripId);
+          const actData = await getTripActivities(tripId);
+          setTrip(tripData);
+          setActivities(actData);
+        } catch (e) {
+          console.error('Failed to load activities:', e);
+        } finally {
+          setLoading(false);
+        }
       }
-    }
-    load();
-  }, [tripId]);
+      load();
+    }, [tripId])
+  );
 
   function buildSections() {
     const grouped = groupByDate(activities);
