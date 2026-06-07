@@ -17,10 +17,23 @@ service cloud.firestore {
     }
     
     match /activities/{activityId} {
-      allow create: if request.auth != null
-                    && request.resource.data.tripId != null;
 
-      allow read, update, delete: if request.auth != null;
+      function tripBelongsToUser() {
+        let tripId = request.resource.data.tripId;
+        let trip   = get(/databases/$(database)/documents/trips/$(tripId));
+        return trip.data.userId == request.auth.uid;
+      }
+
+      function existingTripBelongsToUser() {
+        let tripId = resource.data.tripId;
+        let trip   = get(/databases/$(database)/documents/trips/$(tripId));
+        return trip.data.userId == request.auth.uid;
+      }
+
+      allow create: if request.auth != null && tripBelongsToUser();
+
+      allow read, update, delete: if request.auth != null
+                                   && existingTripBelongsToUser();
     }
   }
 }
