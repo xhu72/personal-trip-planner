@@ -3,25 +3,32 @@
 A mobile app for planning, organizing, and remembering every personal trip — built with React Native, Expo, and Firebase.
 
 ## Features
-### Authentication
+
+#### Authentication
 - **Welcome screen**: clean entry point with Get started and Sign in flows
 - **Sign up screen**: create an account with name, email, and password; profile saved to Firestore
 - **Login screen**: sign in with email and password; show/hide password toggle
 - **Persistent session**: Firebase Auth remembers you across app restarts
 - **Auto-redirect**: RouteGuard sends logged-in users straight to Home, logged-out users to Welcome
-- **Sign out**: clears session and redirects immediately
 
-### Trip management
+#### Trip management
 - **Home screen**: lists all your trips with status badges (Upcoming / Active / Completed), and empty state
 - **Create trip screen**: trip name, multi-destination adding, start/end dates with live day count, and total budget
 - **Trip summary screen**: destination info, budget progress bar, per-day cost estimates broken down by category, over-budget warning
-- **Delete trip**: confirmation alert before permanent deletion
 
-### Security
-- Firestore security rules lock every read and write to the authenticated owner
+#### Security
+- **User profiles**: read and write locked to the authenticated owner (`request.auth.uid == userId`)
+- **Trips**: create requires the `userId` field to match the caller; read, update, and delete verify ownership against the stored `userId`
+- **Activities**: create verifies the parent trip belongs to the caller; read, update, and delete look up the existing activity's trip and verify the same ownership chain
+- No unauthenticated access is permitted to any collection
+
+
+#### Itinerary management
+- **Activities screen**: all activities grouped by day with Day N headers, category color-coded cards (Food, Transport, Attraction, Accommodation)
+- **Add activity screen**: title, location, category picker, date (YYYY-MM-DD), time (HH:MM), duration in minutes with live human-readable preview
+- **Edit activity screen**: update or delete any activity; mark as booked with confirmation number, provider name, and provider URL
 
 ## Screenshots
-
 
 | Welcome | Login | Sign up |
 |---------|-------|---------|
@@ -31,7 +38,13 @@ A mobile app for planning, organizing, and remembering every personal trip — b
 | Home | Create trip | Trip summary |
 |---------|-------|---------|
 | <img src="assets/Home.PNG" width="200"/> | <img src="assets/Createtrip.PNG" width="200"/> | <img src="assets/TripSummary.PNG" width="200"/> |
-| Trip cards with status badges | multi-destinations, dates, budget | Budget bar, cost breakdown, over-budget warning |
+| Trip cards with status badges | Destinations, date range, budget | Budget bar, cost per category |
+
+
+| Activities | Add activity | Edit activity |
+|---------|-------|---------|
+| <img src="assets/Activities.PNG" width="200"/> | <img src="assets/Add-activity.PNG" width="200"/> | <img src="assets/Edit-activity.PNG" width="200"/> |
+| Day-grouped list with category color dots | Title, location, category, date, time, duration | Update fields, mark as booked, and delete |
 
 ---
 
@@ -44,7 +57,6 @@ A mobile app for planning, organizing, and remembering every personal trip — b
 | Routing | Expo Router v6 | File-based screen navigation |
 | Auth | Firebase Authentication | Email/password login and session |
 | Database | Cloud Firestore | Real-time trip data storage |
-| Location search | Google Places API | Destination autocomplete |
 | Safe areas | react-native-safe-area-context | Notch and home bar handling |
 
 
