@@ -7,11 +7,17 @@ export type BookingDetails = {
   bookedAt?:       string;   // ISO string
 }
 
+export type Coordinates = {
+  lat: number;
+  lng: number;
+}
+
 export type Activity = {
   id:             string;
   tripId:         string;
   title:          string;
   location:       string;
+  coordinates:    Coordinates | null;
   date:           string;    // "YYYY-MM-DD"
   time:           string;    // "HH:MM"  e.g. "09:30"
   duration:       number;    // minutes  e.g. 90

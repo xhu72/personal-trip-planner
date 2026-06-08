@@ -30,6 +30,7 @@ function docToActivity(id: string, data: Record<string, any>): Activity {
     tripId:    data.tripId,
     title:     data.title,
     location:  data.location,
+    coordinates:    data.coordinates ?? null,
     date:      data.date,
     time:      data.time,
     duration:  data.duration,

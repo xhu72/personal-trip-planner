@@ -151,18 +151,32 @@ export default function ActivitiesScreen() {
     <SafeAreaView style={styles.container}>
 
       <View style={styles.header}>
-        <Pressable onPress={() => router.back()}>
-          <Text style={styles.backText}>←</Text>
-        </Pressable>
-        <View style={styles.headerCenter}>
-          <Text style={styles.heading} numberOfLines={1}>
-            {trip?.title ?? 'Itinerary'}
-          </Text>
-          <Text style={styles.headingSub}>
-            {activities.length} activit{activities.length === 1 ? 'y' : 'ies'}
-          </Text>
+        <View style={styles.headerLeft}>
+          <Pressable onPress={() => router.back()}>
+            <Text style={styles.backText}>←</Text>
+          </Pressable>
+
+          <View style={styles.headerCenter}>
+            <Text style={styles.heading} numberOfLines={1}>
+              {trip?.title ?? 'Itinerary'}
+            </Text>
+            <Text style={styles.headingSub}>
+              {activities.length} activit{activities.length === 1 ? 'y' : 'ies'}
+            </Text>
+          </View>
+
+          <Pressable
+            style={styles.mapBtn}
+            onPress={() =>
+              router.push({
+                pathname: '/(traveler)/TripMapScreen',
+                params: { tripId },
+              })
+            }
+          >
+            <Text style={styles.mapBtnText}>🗺</Text>
+          </Pressable>
         </View>
-        <View style={{ width: 48 }} />
       </View>
 
       <SectionList
@@ -233,7 +247,23 @@ const styles = StyleSheet.create({
   backText: {
     fontSize: 20,
     color: 'black',
-    width: 48,
+  },
+  headerLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 16,
+  },
+  mapBtn: {
+    width:           40,
+    height:          40,
+    borderRadius:    20,
+    backgroundColor: '#EEF5FD',
+    alignItems:      'center',
+    justifyContent:  'center',
+  },
+  mapBtnText: {
+    fontSize: 18,
+    textAlign: 'center',
   },
   headerCenter: {
     flex: 1,

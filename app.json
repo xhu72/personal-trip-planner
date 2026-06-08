@@ -14,15 +14,21 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "config": {
+        "googleMapsApiKey": "your_google_maps_api_key_here"
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "config": {
+        "googleMaps": {
+          "apiKey": "your_google_maps_api_key_here"
+        }
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"
