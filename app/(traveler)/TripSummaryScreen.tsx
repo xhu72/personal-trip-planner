@@ -124,18 +124,31 @@ export default function TripSummaryScreen() {
           </View>
         )}
 
-        <Pressable
-          style={styles.itineraryBtn}
-          onPress={() =>
-            router.push({
-              pathname: '/(traveler)/ActivitiesScreen',
-              params: { tripId },
-            })
-          }
-        >
-          <Text style={styles.itineraryBtnText}>View itinerary</Text>
-        </Pressable>
+        <View style={styles.btnRow}>
+          <Pressable
+            style={styles.itineraryBtn}
+            onPress={() =>
+              router.push({
+                pathname: '/(traveler)/ActivitiesScreen',
+                params: { tripId },
+              })
+            }
+          >
+            <Text style={styles.itineraryBtnText}>View itinerary</Text>
+          </Pressable>
 
+          <Pressable
+            style={styles.mapBtn}
+            onPress={() =>
+              router.push({
+                pathname: '/(traveler)/TripMapScreen',
+                params: { tripId },
+              })
+            }
+          >
+            <Text style={styles.mapBtnIcon}>🗺</Text>
+          </Pressable>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -277,11 +290,11 @@ const styles = StyleSheet.create({
     lineHeight: 18,
   },
   itineraryBtn: {
+    flex: 1,
     backgroundColor: '#185FA5',
     borderRadius: 12,
     paddingVertical: 16,
     alignItems: 'center',
-    marginTop: 8,
   },
   itineraryBtnText: {
     color: '#fff',
@@ -291,5 +304,23 @@ const styles = StyleSheet.create({
   notFoundText: {
     fontSize: 16,
     color: '#888',
+  },
+  btnRow: {
+    flexDirection: 'row',
+    gap:           12,
+    marginTop:     8,
+  },
+  mapBtn: {
+    width:           54,
+    height:          54,
+    borderRadius:    12,
+    backgroundColor: '#EEF5FD',
+    alignItems:      'center',
+    justifyContent:  'center',
+    borderWidth:     1,
+    borderColor:     '#D6E4F7',
+  },
+  mapBtnIcon: {
+    fontSize: 22,
   },
 });
