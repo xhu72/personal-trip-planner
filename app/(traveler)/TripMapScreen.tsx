@@ -5,13 +5,14 @@ import {
   Pressable,
   StyleSheet,
   ActivityIndicator,
+  ScrollView,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import MapView, { Marker, Callout, Region, Polyline } from 'react-native-maps';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { getTripActivities } from '../../src/services/activities';
 import { getTrip } from '../../src/services/trips';
-import { Activity, Coordinates } from '../../src/types/Activity';
+import { Activity, ActivityCategory } from '../../src/types/Activity';
 import { Trip } from '../../src/types/Trip';
 import { CATEGORY_COLORS } from './ActivitiesScreen';
 
@@ -23,6 +24,7 @@ export default function TripMapScreen() {
   const [trip, setTrip]             = useState<Trip | null>(null);
   const [activities, setActivities] = useState<Activity[]>([]);
   const [loading, setLoading]       = useState(true);
+  const [activeCategories, setActiveCategories] = useState<ActivityCategory[] | null>(null);
 
   useFocusEffect(
     useCallback(() => {
@@ -46,38 +48,6 @@ export default function TripMapScreen() {
 
   const mappable = activities.filter(a => a.coordinates !== null);
 
-  const sortedActivities = [...mappable].sort((a, b) => {
-    const dateCompare = a.date.localeCompare(b.date);
-
-    if (dateCompare !== 0) {
-      return dateCompare;
-    }
-
-    return a.time.localeCompare(b.time);
-  });
-
-  const routeCoordinates = sortedActivities.map(a => ({
-    latitude: a.coordinates!.lat,
-    longitude: a.coordinates!.lng,
-  }));
-
-  function onMapReady() {
-    if (!mappable.length) return;
-
-    const coords = mappable
-      .filter((a): a is Activity & { coordinates: Coordinates } => a.coordinates !== null)
-      .map(a => ({
-        latitude: a.coordinates.lat,
-        longitude: a.coordinates.lng,
-      }));
-
-    if (!coords.length) return;
-
-    mapRef.current?.fitToCoordinates(coords, {
-      edgePadding: { top: 80, right: 40, bottom: 80, left: 40 },
-      animated: true,
-    });
-  }
 
   function formatCalloutDate(dateStr: string): string {
     return new Date(dateStr).toLocaleDateString('en-US', {
@@ -108,6 +78,72 @@ export default function TripMapScreen() {
     longitudeDelta: 0.05,
   };
 
+  //get categories in the trip activities
+  const allCategories = mappable.map(a => a.category);
+  const uniqueCategoriesSet = new Set(allCategories);
+  const uniqueCategoriesArray = Array.from(uniqueCategoriesSet);
+  const presentCategories = uniqueCategoriesArray as ActivityCategory[];
+
+  //filtered or all
+  let visibleActivities: Activity[];
+  const isFiltering = activeCategories !== null;
+  if (isFiltering) {
+    visibleActivities = mappable.filter(a =>
+      activeCategories.includes(a.category)
+    );
+  } else {
+    visibleActivities = mappable;
+  }
+
+  const routeCoordinates = [...visibleActivities]
+    .sort((a, b) => {
+      const dateCompare = a.date.localeCompare(b.date);
+      if (dateCompare !== 0) return dateCompare;
+      return a.time.localeCompare(b.time);
+    })
+    .map(a => ({
+      latitude:  a.coordinates!.lat,
+      longitude: a.coordinates!.lng,
+    }));
+
+  function onMapReady() {
+    if (!visibleActivities.length) return;
+
+    const coords = visibleActivities.map(a => ({
+      latitude:  a.coordinates!.lat,
+      longitude: a.coordinates!.lng,
+    }));
+
+    mapRef.current?.fitToCoordinates(coords, {
+      edgePadding: { top: 80, right: 40, bottom: 80, left: 40 },
+      animated: true,
+    });
+  }
+
+  /*
+  1.no filter, show all
+  2.category is already selected, only one category and user clicks it again, show all
+  3.category is already selected, but more than one selected, remove this category from list
+  4.category is NOT selected yet, add this category to selection
+  */
+  function toggleCategory(cat: ActivityCategory) {
+    setActiveCategories(prev => {
+      if (prev === null) {
+        return [cat];
+      }
+
+      const already = prev.includes(cat);
+      if (already && prev.length === 1) {
+        return null;
+      }
+      if (already) {
+        return prev.filter(c => c !== cat);
+      }
+
+      return [...prev, cat];
+    });
+  }
+
   return (
     <View style={styles.container}>
       <MapView
@@ -119,8 +155,10 @@ export default function TripMapScreen() {
         showsUserLocation
         showsCompass
       >
-        {mappable.map((activity, index) => {
-          const colors = CATEGORY_COLORS[activity.category];
+        {mappable.map(activity => {
+          const visibleIndex = visibleActivities.findIndex(a => a.id === activity.id);
+          const isVisible    = visibleIndex !== -1;
+          const colors       = CATEGORY_COLORS[activity.category];
           return (
             <Marker
               key={activity.id}
@@ -128,10 +166,14 @@ export default function TripMapScreen() {
                 latitude:  activity.coordinates!.lat,
                 longitude: activity.coordinates!.lng,
               }}
+              opacity={isVisible ? 1 : 0}
+              tappable={isVisible}
               pinColor={colors.dot}
             >
               <View style={[styles.markerPin, { backgroundColor: colors.dot }]}>
-                <Text style={styles.markerNumber}>{index + 1}</Text>
+                <Text style={styles.markerNumber}>
+                  {isVisible ? visibleIndex + 1 : ''}
+                </Text>
               </View>
 
               <Callout tooltip>
@@ -144,7 +186,7 @@ export default function TripMapScreen() {
                     {formatCalloutDate(activity.date)}{'  ·  '}{activity.time}{'  ·  '}{formatDuration(activity.duration)}
                   </Text>
 
-                  <View style={[styles.calloutPill,{ backgroundColor: colors.bg },]}>
+                  <View style={[styles.calloutPill, { backgroundColor: colors.bg }]}>
                     <Text style={[styles.calloutPillText, { color: colors.text }]}>
                       {activity.category}
                     </Text>
@@ -176,7 +218,7 @@ export default function TripMapScreen() {
               {trip?.title ?? 'Map'}
             </Text>
             <Text style={styles.headingSub}>
-              {mappable.length} pin{mappable.length !== 1 ? 's' : ''}
+              {visibleActivities.length} pin{visibleActivities.length !== 1 ? 's' : ''}
             </Text>
           </View>
           <View style={{ width: 48 }} />
@@ -190,6 +232,60 @@ export default function TripMapScreen() {
           <Text style={styles.nopinsSub}>
             Add activities with a location to see them here
           </Text>
+        </View>
+      )}
+
+      {presentCategories.length > 1 && (
+        <View style={styles.filterBar}>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.filterScroll}
+          >
+            <Pressable
+              style={[
+                styles.filterChip,
+                activeCategories === null && styles.filterChipAllActive,
+              ]}
+              onPress={() => setActiveCategories(null)}
+            >
+              <Text
+                style={[
+                  styles.filterChipText,
+                  activeCategories === null && styles.filterChipTextActive,
+                ]}
+              >
+                All
+              </Text>
+            </Pressable>
+
+            {presentCategories.map(cat => {
+              const colors   = CATEGORY_COLORS[cat];
+              const isActive = activeCategories === null || activeCategories.includes(cat);
+              return (
+                <Pressable
+                  key={cat}
+                  style={[
+                    styles.filterChip,
+                    isActive && {
+                      backgroundColor: colors.bg,
+                      borderColor:     colors.dot,
+                    },
+                  ]}
+                  onPress={() => toggleCategory(cat)}
+                >
+                  <Text
+                    style={[
+                      styles.filterChipText,
+                      isActive && { color: colors.text, fontWeight: '600' },
+                    ]}
+                  >
+                    {cat}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </ScrollView>
         </View>
       )}
     </View>
@@ -325,5 +421,41 @@ const styles = StyleSheet.create({
     color: '#888',
     textAlign: 'center',
     lineHeight: 18,
+  },
+  filterBar: {
+    position:        'absolute',
+    bottom:          0,
+    left:            0,
+    right:           0,
+    backgroundColor: 'rgba(255,255,255,0.97)',
+    borderTopWidth:  StyleSheet.hairlineWidth,
+    borderTopColor:  '#E4E4E4',
+    paddingTop:    10,
+    paddingBottom: 28,
+  },
+  filterScroll: {
+    paddingHorizontal: 16,
+    gap:               8,
+    flexDirection:     'row',
+  },
+  filterChip: {
+    paddingHorizontal: 14,
+    paddingVertical:   7,
+    borderRadius:      20,
+    borderWidth:       1,
+    borderColor:       '#D8D8D8',
+    backgroundColor:   '#F4F4F4',
+  },
+  filterChipAllActive: {
+    backgroundColor: '#185FA5',
+    borderColor:     '#185FA5',
+  },
+  filterChipText: {
+    fontSize:   12,
+    color:      '#888',
+    fontWeight: '500',
+  },
+  filterChipTextActive: {
+    color: '#fff',
   },
 });
