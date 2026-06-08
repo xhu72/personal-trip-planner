@@ -7,7 +7,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import MapView, { Marker, Callout, Region } from 'react-native-maps';
+import MapView, { Marker, Callout, Region, Polyline } from 'react-native-maps';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { getTripActivities } from '../../src/services/activities';
 import { getTrip } from '../../src/services/trips';
@@ -45,6 +45,21 @@ export default function TripMapScreen() {
   );
 
   const mappable = activities.filter(a => a.coordinates !== null);
+
+  const sortedActivities = [...mappable].sort((a, b) => {
+    const dateCompare = a.date.localeCompare(b.date);
+
+    if (dateCompare !== 0) {
+      return dateCompare;
+    }
+
+    return a.time.localeCompare(b.time);
+  });
+
+  const routeCoordinates = sortedActivities.map(a => ({
+    latitude: a.coordinates!.lat,
+    longitude: a.coordinates!.lng,
+  }));
 
   function onMapReady() {
     if (!mappable.length) return;
@@ -139,6 +154,16 @@ export default function TripMapScreen() {
             </Marker>
           );
         })}
+
+        {routeCoordinates.length >= 2 && (
+          <Polyline
+            coordinates={routeCoordinates}
+            strokeColor="#185FA5"
+            strokeWidth={3}
+            lineDashPattern={[10, 8]}
+            lineJoin="round"
+          />
+        )}  
       </MapView>
 
       <SafeAreaView style={styles.headerWrapper} edges={['top']}>
