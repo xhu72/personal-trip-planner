@@ -42,13 +42,13 @@ A mobile app for planning, organizing, and remembering every personal trip — b
 
 | Home | Create trip | Trip summary |
 |------|-------------|-------------|
-| <img src="assets/Home.PNG" width="200" style="margin-right:45px"/> | <img src="assets/Createtrip.PNG" width="200"/> | <img src="assets/TripSummary.PNG?v=2" width="200"/> |
+| <img src="assets/Home.PNG" width="200" style="margin-right:45px"/> | <img src="assets/Createtrip.PNG?v=2" width="200"/> | <img src="assets/TripSummary.PNG?v=2" width="200"/> |
 | All trips listed with status badges | Name, destinations, date range, budget | Budget bar and cost estimates breakdown |
 
 
 | Activities | Add activity | Edit activity |
 |---------|-------|---------|
-| <img src="assets/Activities.PNG?v=2" width="200"/> | <img src="assets/Add-activity.PNG?v=2" width="200"/> | <img src="assets/Edit-activity.PNG" width="200"/> |
+| <img src="assets/Activities.PNG?v=2" width="200"/> | <img src="assets/Add-activity.PNG?v=3" width="200"/> | <img src="assets/Edit-activity.PNG?v=2" width="200"/> |
 | Day-grouped list with category color dots | Title, location, category, date, time, duration | Update fields, mark as booked, and delete |
 
 | Trip Map |

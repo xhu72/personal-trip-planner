@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useAuth } from '../../src/context/AuthContext';
 import { createTrip } from '../../src/services/trips';
+import DatePickerInput from '../../src/components/DatePickerInput';
 
 function daysBetween(start: string, end: string): number {
   const startTime = new Date(start).getTime();
@@ -120,21 +121,11 @@ export default function CreateTripScreen() {
         <View style={styles.dateRow}>
           <View style={styles.dateCol}>
             <Text style={styles.label}>Start date</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="YYYY-MM-DD"
-              value={startDate}
-              onChangeText={setStartDate}
-            />
+            <DatePickerInput value={startDate} onChange={setStartDate} placeholder="YYYY-MM-DD"/>
           </View>
           <View style={styles.dateCol}>
             <Text style={styles.label}>End date</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="YYYY-MM-DD"
-              value={endDate}
-              onChangeText={setEndDate}
-            />
+            <DatePickerInput value={endDate} onChange={setEndDate} placeholder="YYYY-MM-DD" />
           </View>
         </View>
 

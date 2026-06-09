@@ -13,6 +13,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { getActivity, updateActivity, deleteActivity } from '../../src/services/activities';
 import { Activity, ActivityCategory } from '../../src/types/Activity';
+import DatePickerInput from '../../src/components/DatePickerInput';
 import { CATEGORY_COLORS, formatDuration } from './ActivitiesScreen';
 
 const CATEGORIES: ActivityCategory[] = [
@@ -187,12 +188,7 @@ export default function EditActivityScreen() {
         </View>
 
         <Text style={styles.label}>Date</Text>
-        <TextInput
-          style={styles.input}
-          value={date}
-          onChangeText={setDate}
-          placeholder="YYYY-MM-DD"
-        />
+        <DatePickerInput value={date} onChange={setDate} placeholder="YYYY-MM-DD" />
 
         <View style={styles.row}>
           <View style={{ flex: 1 }}>

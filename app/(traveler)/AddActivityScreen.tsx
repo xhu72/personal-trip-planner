@@ -11,6 +11,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { createActivity } from '../../src/services/activities';
 import { getTrip } from '../../src/services/trips';
+import DatePickerInput from '../../src/components/DatePickerInput';
 import { searchPlaces, getPlaceCoordinates, PlaceSuggestion } from '../../src/services/places';
 import { ActivityCategory, Coordinates } from '../../src/types/Activity';
 import { CATEGORY_COLORS, formatDuration } from './ActivitiesScreen';
@@ -192,12 +193,7 @@ export default function AddActivityScreen() {
         </View>
 
         <Text style={styles.label}>Date</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="YYYY-MM-DD"
-          value={date}
-          onChangeText={setDate}
-        />
+        <DatePickerInput value={date} onChange={setDate} placeholder="YYYY-MM-DD" />
 
         <View style={styles.row}>
           <View style={{ flex: 1 }}>
