@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { View, Text, FlatList, Pressable, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
+import { useRouter, useFocusEffect } from 'expo-router';
 import { signOut } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import { auth, db } from '../../firebaseConfig';
@@ -72,37 +72,39 @@ export default function HomeScreen() {
   const [trips, setTrips] = useState<Trip[]>([]);
   const [firstName, setFirstName] = useState('');
 
-  useEffect(() => {
-    async function loadTrips() {
-      if (!user) return;
+  useFocusEffect(
+    useCallback(() => {
+      async function loadTrips() {
+        if (!user) return;
 
-      try {
-        const data = await getUserTrips(user.uid);
-        setTrips(data);
-        /* testing activity
-        if (data.length > 0) {
-          await createActivity({
-            tripId:         data[0].id,
-            title:          'Test Activity',
-            location:       'Tokyo Station',
-            date:           '2025-10-03',
-            time:           '09:00',
-            duration:       60,
-            category:       'Attraction',
-            isBooked:       false,
-            bookingDetails: {},
-          });
-          const all = await getTripActivities(data[0].id);
-          console.log('Activities:', all.length, all[0].title);
-        }*/
-      } catch (e) {
-        console.error(e);
+        try {
+          const data = await getUserTrips(user.uid);
+          setTrips(data);
+          /* testing activity
+          if (data.length > 0) {
+            await createActivity({
+              tripId:         data[0].id,
+              title:          'Test Activity',
+              location:       'Tokyo Station',
+              date:           '2025-10-03',
+              time:           '09:00',
+              duration:       60,
+              category:       'Attraction',
+              isBooked:       false,
+              bookingDetails: {},
+            });
+            const all = await getTripActivities(data[0].id);
+            console.log('Activities:', all.length, all[0].title);
+          }*/
+        } catch (e) {
+          console.error(e);
+        }
       }
-    }
 
     loadTrips();
     
-  }, [user]);
+    }, [user])
+  );
 
   useEffect(() => {
     if (!user) return;
