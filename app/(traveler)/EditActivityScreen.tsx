@@ -228,6 +228,20 @@ export default function EditActivityScreen() {
         </View>
 
         <Pressable
+          style={styles.bookingBtn}
+          onPress={() =>
+            router.push({
+              pathname: '/(traveler)/BookingDetailScreen',
+              params: { activityId },
+            })
+          }
+        >
+          <Text style={styles.bookingBtnText}>
+            {activity.isBooked ? 'View booking details' : 'Add booking details'}
+          </Text>
+        </Pressable>
+
+        <Pressable
           style={[styles.primaryBtn, saving && styles.disabled]}
           onPress={handleSave}
           disabled={saving}
@@ -236,6 +250,8 @@ export default function EditActivityScreen() {
             {saving ? 'Saving...' : 'Save changes'}
           </Text>
         </Pressable>
+
+
 
       </ScrollView>
     </SafeAreaView>
@@ -357,5 +373,18 @@ const styles = StyleSheet.create({
   notFound: {
     fontSize: 16,
     color: '#888',
+  },
+  bookingBtn: {
+    borderWidth:     1,
+    borderColor:     '#185FA5',
+    borderRadius:    12,
+    paddingVertical: 14,
+    alignItems:      'center',
+    marginBottom:    12,
+  },
+  bookingBtnText: {
+    color:      '#185FA5',
+    fontSize:   15,
+    fontWeight: '500',
   },
 });
