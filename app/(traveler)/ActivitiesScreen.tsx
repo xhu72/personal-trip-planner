@@ -9,10 +9,17 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, useLocalSearchParams, useFocusEffect } from 'expo-router';
+import { disableNetwork, enableNetwork } from 'firebase/firestore';
 import { getTripActivities, groupByDate } from '../../src/services/activities';
 import { getTrip } from '../../src/services/trips';
 import { Activity, ActivityCategory } from '../../src/types/Activity';
 import { Trip } from '../../src/types/Trip';
+import { db } from '../../firebaseConfig';
+import {
+  cacheTripData,
+  getCachedTrip,
+  getCachedActivities,
+} from '../../src/utils/offlineCache';
 
 export const CATEGORY_COLORS = {
   Food: {
@@ -102,19 +109,33 @@ export default function ActivitiesScreen() {
   const [trip, setTrip]               = useState<Trip | null>(null);
   const [activities, setActivities]   = useState<Activity[]>([]);
   const [loading, setLoading]         = useState(true);
+  const [isOffline, setIsOffline] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
       async function load() {
         if (!tripId) return;
+        const cachedTrip = await getCachedTrip(tripId);
+        const cachedActivities = await getCachedActivities(tripId);
+
+        if (cachedTrip && cachedActivities) {
+          setTrip(cachedTrip);
+          setActivities(cachedActivities);
+          setLoading(false); 
+        }
         try {
-          setLoading(true);
-          const tripData = await getTrip(tripId);
-          const actData = await getTripActivities(tripId);
-          setTrip(tripData);
-          setActivities(actData);
-        } catch (e) {
-          console.error('Failed to load activities:', e);
+          const freshTrip = await getTrip(tripId);
+          const freshActivities = await getTripActivities(tripId);
+
+          if (freshTrip && freshActivities) {
+            setTrip(freshTrip);
+            setActivities(freshActivities);
+            setIsOffline(false);
+
+            await cacheTripData(freshTrip, freshActivities);
+          }
+        } catch {
+          setIsOffline(true);
         } finally {
           setLoading(false);
         }
@@ -178,6 +199,14 @@ export default function ActivitiesScreen() {
           </Pressable>
         </View>
       </View>
+
+      {isOffline && (
+        <View style={styles.offlineBanner}>
+          <Text style={styles.offlineBannerText}>
+            📵  You're offline — showing cached data
+          </Text>
+        </View>
+      )}
 
       <SectionList
         sections={sections}
@@ -383,5 +412,17 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: '600',
+  },
+  offlineBanner: {
+    backgroundColor: '#FFF3CD',
+    paddingVertical:   8,
+    paddingHorizontal: 16,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: '#FFD166',
+  },
+  offlineBannerText: {
+    fontSize:   13,
+    color:      '#856404',
+    textAlign:  'center',
   },
 });

@@ -4,6 +4,12 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { getTrip, deleteTrip } from '../../src/services/trips';
 import { Trip } from '../../src/types/Trip';
+import {
+  cacheTripData,
+  getCachedTrip,
+  getCachedActivities,
+} from '../../src/utils/offlineCache';
+import { getTripActivities } from '../../src/services/activities';
 
 const DAILY_ESTIMATES = [
   { label: 'Food',       dailyRate: 60 },
@@ -40,10 +46,32 @@ export default function TripSummaryScreen() {
   const router = useRouter();
   const { tripId } = useLocalSearchParams<{ tripId: string }>();
   const [trip, setTrip] = useState<Trip | null>(null);
+  const [isOffline, setIsOffline] = useState(false);
 
   useEffect(() => {
     if (!tripId) return;
-    getTrip(tripId).then(result => setTrip(result));
+    async function load() {
+      const cached = await getCachedTrip(tripId);
+      if (cached) {
+        setTrip(cached);
+      }
+
+      try {
+        const freshTrip = await getTrip(tripId);
+        const freshActivities = await getTripActivities(tripId);
+        if (freshTrip) {
+          setTrip(freshTrip);
+          setIsOffline(false);
+          if (freshActivities) {
+            await cacheTripData(freshTrip, freshActivities);
+          }
+        }
+      } catch {
+        setIsOffline(true);
+      }
+    }
+
+    load();
   }, [tripId]);
 
   async function handleDelete() {
@@ -80,6 +108,14 @@ export default function TripSummaryScreen() {
             <Text style={styles.deleteText}>Delete</Text>
           </Pressable>
         </View>
+
+        {isOffline && (
+          <View style={styles.offlineBanner}>
+            <Text style={styles.offlineBannerText}>
+              📵  You're offline — showing cached data
+            </Text>
+          </View>
+        )}
 
         <Text style={styles.title}>{trip.title}</Text>
         <Text style={styles.meta}>
@@ -322,5 +358,17 @@ const styles = StyleSheet.create({
   },
   mapBtnIcon: {
     fontSize: 22,
+  },
+  offlineBanner: {
+    backgroundColor:   '#FFF3CD',
+    paddingVertical:   8,
+    paddingHorizontal: 16,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: '#FFD166',
+  },
+  offlineBannerText: {
+    fontSize:  13,
+    color:     '#856404',
+    textAlign: 'center',
   },
 });
