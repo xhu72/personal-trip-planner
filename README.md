@@ -1,6 +1,6 @@
 # Personal Trip Planner
 
-A mobile app for planning, organizing, and remembering every personal trip — built with React Native, Expo, and Firebase.
+A mobile app for planning, organizing, and remembering every personal trip - built with React Native, Expo, and Firebase.
 
 ## Features
 
@@ -20,7 +20,12 @@ A mobile app for planning, organizing, and remembering every personal trip — b
 - View activities grouped by day
 - Add, edit, and delete activities
 - Category tags: Food, Transport, Attraction, Accommodation
-- Mark activities as booked with confirmation details
+- Add booking details (confirmation number, provider, booking link) per activity, and clear them later
+
+#### Offline support
+- Trip and activity data cached locally on device
+- Trip summary and itinerary load instantly from cache
+- Offline banner shown when data can't be refreshed from the server
 
 #### Map and location
 - Google Places autocomplete when adding an activity location
@@ -48,13 +53,13 @@ A mobile app for planning, organizing, and remembering every personal trip — b
 
 | Activities | Add activity | Edit activity |
 |---------|-------|---------|
-| <img src="assets/Activities.PNG?v=2" width="200"/> | <img src="assets/Add-activity.PNG?v=3" width="200"/> | <img src="assets/Edit-activity.PNG?v=2" width="200"/> |
-| Day-grouped list with category color dots | Title, location, category, date, time, duration | Update fields, mark as booked, and delete |
+| <img src="assets/Activities.PNG?v=2" width="200"/> | <img src="assets/Add-activity.PNG?v=3" width="200"/> | <img src="assets/Edit-activity.PNG?v=4" width="200"/> |
+| Day-grouped list with category color dots | Title, location, category, date, time, duration | Update fields, link booking details, and delete |
 
-| Trip Map |
-|---------|
-| <img src="assets/TripMap.PNG" width="200"/> |
-| Pins/filter by category, route polyline |
+| Booking details | Trip Map |
+|---------|---------|
+| <img src="assets/BookingDetail.PNG" width="200"/> | <img src="assets/TripMap.PNG" width="200"/> |
+| Confirmation number, provider, and booking link | Pins/filter by category, route polyline |
 
 ## Tech stack
 
