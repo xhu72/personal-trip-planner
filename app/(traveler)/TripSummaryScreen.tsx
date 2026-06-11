@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { View, Text, Pressable, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, Pressable, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { getTrip, deleteTrip } from '../../src/services/trips';
@@ -160,9 +160,9 @@ export default function TripSummaryScreen() {
           </View>
         )}
 
-        <View style={styles.btnRow}>
+        <View style={styles.actionGrid}>
           <Pressable
-            style={styles.itineraryBtn}
+            style={styles.actionBtn}
             onPress={() =>
               router.push({
                 pathname: '/(traveler)/ActivitiesScreen',
@@ -170,11 +170,12 @@ export default function TripSummaryScreen() {
               })
             }
           >
-            <Text style={styles.itineraryBtnText}>View itinerary</Text>
+            <Text style={styles.actionIcon}>🗓</Text>
+            <Text style={styles.actionLabel}>Itinerary</Text>
           </Pressable>
 
           <Pressable
-            style={styles.mapBtn}
+            style={styles.actionBtn}
             onPress={() =>
               router.push({
                 pathname: '/(traveler)/TripMapScreen',
@@ -182,8 +183,35 @@ export default function TripSummaryScreen() {
               })
             }
           >
-            <Text style={styles.mapBtnIcon}>🗺</Text>
+            <Text style={styles.actionIcon}>🗺</Text>
+            <Text style={styles.actionLabel}>Map</Text>
           </Pressable>
+
+          <Pressable
+            style={styles.actionBtn}
+            onPress={() =>
+              router.push({
+                pathname: '/(traveler)/MediaScreen',
+                params: { tripId },
+              })
+            }
+          >
+            <Text style={styles.actionIcon}>📷</Text>
+            <Text style={styles.actionLabel}>Photos</Text>
+          </Pressable> 
+
+          <Pressable
+            style={styles.actionBtn}
+            onPress={() =>
+              router.push({
+                pathname: '/(traveler)/FavoritesScreen',
+                params: { tripId },
+              })
+            }
+          >
+            <Text style={styles.actionIcon}>⭐</Text>
+            <Text style={styles.actionLabel}>Favorites</Text>
+          </Pressable>  
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -325,26 +353,32 @@ const styles = StyleSheet.create({
     color: '#856404',
     lineHeight: 18,
   },
-  itineraryBtn: {
+  actionBtn: {
     flex: 1,
-    backgroundColor: '#185FA5',
-    borderRadius: 12,
+    minWidth: '40%',
+    backgroundColor: '#fff',
+    borderRadius: 14,
     paddingVertical: 16,
-    alignItems: 'center',
+    alignItems:  'center',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor:'#E4E4E4',
+    gap: 6,
   },
-  itineraryBtnText: {
-    color: '#fff',
-    fontSize: 16,
+  actionLabel: {
+    fontSize: 13,
     fontWeight: '600',
+    color: '#1A3C6B',
   },
   notFoundText: {
     fontSize: 16,
     color: '#888',
   },
-  btnRow: {
-    flexDirection: 'row',
-    gap:           12,
-    marginTop:     8,
+  actionGrid: {
+    flexDirection:  'row',
+    flexWrap:       'wrap',
+    gap:            12,
+    marginTop:      8,
+    marginBottom:   16,
   },
   mapBtn: {
     width:           54,
@@ -370,5 +404,8 @@ const styles = StyleSheet.create({
     fontSize:  13,
     color:     '#856404',
     textAlign: 'center',
+  },
+  actionIcon:{
+    fontSize:24,
   },
 });
