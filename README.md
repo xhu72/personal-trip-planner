@@ -34,6 +34,12 @@ A mobile app for planning, organizing, and remembering every personal trip - bui
 - Route polyline connecting pins in chronological order
 - Tap a pin to see activity details
 
+#### Media and favorites
+- Quick-access buttons on the trip summary for itinerary, map, photos, and favorites
+- Add photos from your device to a trip's photo gallery
+- Browse photos in a grid, mark favorites, and delete photos
+- Favorites screen with tabs for favorited photos and booked activities
+
 #### Security
 - Firestore rules lock all data to the authenticated owner
 - Users, trips, and activities each enforce ownership checks
@@ -47,7 +53,7 @@ A mobile app for planning, organizing, and remembering every personal trip - bui
 
 | Home | Create trip | Trip summary |
 |------|-------------|-------------|
-| <img src="assets/Home.PNG" width="200" style="margin-right:45px"/> | <img src="assets/Createtrip.PNG?v=2" width="200"/> | <img src="assets/TripSummary.PNG?v=2" width="200"/> |
+| <img src="assets/Home.PNG" width="200" style="margin-right:45px"/> | <img src="assets/Createtrip.PNG?v=2" width="200"/> | <img src="assets/TripSummary.PNG?v=3" width="200"/> |
 | All trips listed with status badges | Name, destinations, date range, budget | Budget bar and cost estimates breakdown |
 
 
@@ -56,10 +62,15 @@ A mobile app for planning, organizing, and remembering every personal trip - bui
 | <img src="assets/Activities.PNG?v=2" width="200"/> | <img src="assets/Add-activity.PNG?v=3" width="200"/> | <img src="assets/Edit-activity.PNG?v=4" width="200"/> |
 | Day-grouped list with category color dots | Title, location, category, date, time, duration | Update fields, link booking details, and delete |
 
-| Booking details | Trip Map |
+| Booking details | Trip Map | Photos |
+|---------|---------|---------|
+| <img src="assets/BookingDetail.PNG" width="200" style="margin-right:-15px"/> | <img src="assets/TripMap.PNG" width="200"/> | <img src="assets/Photos.PNG" width="200"/> |
+| Confirmation number, provider, and booking link | Show pins and filter by category, route polyline | Photo grid with add, favorite, and delete actions |
+
+| Favorite photos | Favorite bookings |
 |---------|---------|
-| <img src="assets/BookingDetail.PNG" width="200"/> | <img src="assets/TripMap.PNG" width="200"/> |
-| Confirmation number, provider, and booking link | Pins/filter by category, route polyline |
+| <img src="assets/Favorite-photos.PNG" width="200" style="margin-right:20px"/> | <img src="assets/Favorite-bookings.PNG" width="200"/> |
+| Favorited photos for the trip | View booked activities and tap to edit |
 
 ## Tech stack
 
@@ -106,7 +117,7 @@ EXPO_PUBLIC_GOOGLE_MAPS_API_KEY=
 ### 3. Firebase setup
 
 1. Create a project at [console.firebase.google.com](https://console.firebase.google.com)
-2. Enable **Authentication → Email/Password**
+2. Enable **Authentication** using **Email/Password**
 3. Create a **Firestore** database in test mode
 4. Deploy security rules: paste the contents of `firestore.rules` into **Firestore → Rules** and click Publish
 
