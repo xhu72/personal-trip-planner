@@ -107,7 +107,7 @@ export default function CreateTripScreen() {
         <View style={styles.destRow}>
           <TextInput
             style={[styles.input, styles.destInput]}
-            placeholder="e.g. Tokyo, Japan"
+            placeholder="e.g. Toronto"
             value={destInput}
             onChangeText={setDestInput}
             onSubmitEditing={addDestination}

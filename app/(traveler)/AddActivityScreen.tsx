@@ -12,9 +12,11 @@ import { useRouter, useLocalSearchParams } from 'expo-router';
 import { createActivity } from '../../src/services/activities';
 import { getTrip } from '../../src/services/trips';
 import DatePickerInput from '../../src/components/DatePickerInput';
+import TimePickerInput from '../../src/components/TimePickerInput';
+import DurationPickerInput from '../../src/components/DurationPickerInput';
 import { searchPlaces, getPlaceCoordinates, PlaceSuggestion } from '../../src/services/places';
 import { ActivityCategory, Coordinates } from '../../src/types/Activity';
-import { CATEGORY_COLORS, formatDuration } from './ActivitiesScreen';
+import { CATEGORY_COLORS } from './ActivitiesScreen';
 
 const CATEGORIES: ActivityCategory[] = [
   'Food',
@@ -198,28 +200,14 @@ export default function AddActivityScreen() {
         <View style={styles.row}>
           <View style={{ flex: 1 }}>
             <Text style={styles.label}>Time</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="09:00"
-              value={time}
-              onChangeText={setTime}
-            />
+            <TimePickerInput value={time} onChange={setTime} placeholder="09:00" />
           </View>
           <View style={{ width: 12 }} />
           <View style={{ flex: 1 }}>
-            <Text style={styles.label}>Duration (minutes)</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="60"
-              value={duration}
-              onChangeText={setDuration}
-            />
+            <Text style={styles.label}>Duration</Text>
+            <DurationPickerInput value={duration} onChange={setDuration} />
           </View>
         </View>
-
-        {Number(duration) > 0 && (
-          <Text style={styles.hint}>{formatDuration(Number(duration))}</Text>
-        )}
 
         <Pressable
           style={[styles.primaryBtn, saving && styles.disabled]}
@@ -321,12 +309,6 @@ const styles = StyleSheet.create({
   },
   row: {
     flexDirection: 'row',
-  },
-  hint: {
-    fontSize: 13,
-    color: '#185FA5',
-    marginTop: -8,
-    marginBottom: 16,
   },
   primaryBtn: {
     backgroundColor: '#185FA5',

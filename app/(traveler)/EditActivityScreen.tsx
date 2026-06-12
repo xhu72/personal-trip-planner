@@ -14,7 +14,9 @@ import { useRouter, useLocalSearchParams } from 'expo-router';
 import { getActivity, updateActivity, deleteActivity } from '../../src/services/activities';
 import { Activity, ActivityCategory } from '../../src/types/Activity';
 import DatePickerInput from '../../src/components/DatePickerInput';
-import { CATEGORY_COLORS, formatDuration } from './ActivitiesScreen';
+import TimePickerInput from '../../src/components/TimePickerInput';
+import DurationPickerInput from '../../src/components/DurationPickerInput';
+import { CATEGORY_COLORS } from './ActivitiesScreen';
 
 const CATEGORIES: ActivityCategory[] = [
   'Food',
@@ -193,28 +195,14 @@ export default function EditActivityScreen() {
         <View style={styles.row}>
           <View style={{ flex: 1 }}>
             <Text style={styles.label}>Time</Text>
-            <TextInput
-              style={styles.input}
-              value={time}
-              onChangeText={setTime}
-              placeholder="09:00"
-            />
+            <TimePickerInput value={time} onChange={setTime} placeholder="09:00" />
           </View>
           <View style={{ width: 12 }} />
           <View style={{ flex: 1 }}>
             <Text style={styles.label}>Duration (minutes)</Text>
-            <TextInput
-              style={styles.input}
-              value={duration}
-              onChangeText={setDuration}
-              placeholder="60"
-            />
+            <DurationPickerInput value={duration} onChange={setDuration} />
           </View>
         </View>
-
-        {Number(duration) > 0 && (
-          <Text style={styles.hint}>{formatDuration(Number(duration))}</Text>
-        )}
 
         <Text style={styles.label}>Booked?</Text>
         <View style={styles.bookedRow}>
@@ -334,12 +322,6 @@ const styles = StyleSheet.create({
   },
   row: {
     flexDirection: 'row',
-  },
-  hint: {
-    fontSize: 13,
-    color: '#185FA5',
-    marginTop: -8,
-    marginBottom: 16,
   },
   bookedRow: {
     flexDirection: 'row',
