@@ -59,7 +59,7 @@ A mobile app for planning, organizing, and remembering every personal trip - bui
 
 | Activities | Add activity | Edit activity |
 |---------|-------|---------|
-| <img src="assets/Activities.PNG?v=2" width="200"/> | <img src="assets/Add-activity.PNG?v=3" width="200"/> | <img src="assets/Edit-activity.PNG?v=4" width="200"/> |
+| <img src="assets/Activities.PNG?v=2" width="200"/> | <img src="assets/Add-activity.PNG?v=4" width="200"/> | <img src="assets/Edit-activity.PNG?v=5" width="200"/> |
 | Day-grouped list with category color dots | Title, location, category, date, time, duration | Update fields, link booking details, and delete |
 
 | Booking details | Trip Map | Photos |
