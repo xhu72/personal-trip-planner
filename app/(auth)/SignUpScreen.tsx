@@ -82,7 +82,7 @@ export default function SignUpScreen() {
           style={styles.input}
           placeholder="••••••••"
           secureTextEntry
-          textContentType="newPassword"
+          textContentType="oneTimeCode"
           value={password}
           onChangeText={setPassword}
         />
@@ -92,7 +92,7 @@ export default function SignUpScreen() {
           style={styles.input}
           placeholder="••••••••"
           secureTextEntry
-          textContentType="password"
+          textContentType="oneTimeCode"
           value={confirm}
           onChangeText={setConfirm}
         />
@@ -120,13 +120,13 @@ const styles = StyleSheet.create({
   },
   containerContent: {
     paddingHorizontal: 24,
-    paddingTop: 16,
-    paddingBottom: 32,
+    paddingTop: 8,
+    paddingBottom: 20,
   },
   backIcon: {
     fontSize: 20,
     color: 'black',
-    marginBottom: 24,
+    marginBottom: 14,
   },
   title: {
     fontSize: 28,
@@ -137,31 +137,31 @@ const styles = StyleSheet.create({
   subTitle: {
     fontSize: 14,
     color: '#666',
-    marginBottom: 24,
+    marginBottom: 16,
   },
   label: {
     fontSize: 13,
     fontWeight: '500',
     color: '#444',
-    marginBottom: 6,
+    marginBottom: 4,
   },
   input: {
     borderWidth: 1,
     borderColor: '#D8D8D8',
     borderRadius: 10,
     paddingHorizontal: 14,
-    paddingVertical: 12,
+    paddingVertical: 10,
     fontSize: 15,
     color: '#222',
-    marginBottom: 16,
+    marginBottom: 10,
   },
   signUpBtn: {
     backgroundColor: '#185FA5',
     borderRadius: 12,
-    paddingVertical: 16,
+    paddingVertical: 14,
     alignItems: 'center',
-    marginTop: 8,
-    marginBottom: 20,
+    marginTop: 6,
+    marginBottom: 12,
   },
   signUpBtnText: {
     color: '#fff',
